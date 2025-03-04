@@ -1,11 +1,7 @@
-<script setup>
-
-</script>
-
 <template>
-
+    <MyMain :showPromo="true" />
 </template>
 
-<style scoped lang="sass">
-
-</style>
+<script setup>
+    import MyMain from '../components/MyMain.vue'
+</script>
