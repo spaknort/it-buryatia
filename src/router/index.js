@@ -4,7 +4,6 @@ import AboutPage from '../pages/AboutPage'
 import ProjectPage from '../pages/ProjectPage'
 import LoginPage from '../pages/LoginPage'
 import MyLayout from '../pages/MyLayout'
-import AdminLayout from '../pages/admin/AdminLayout'
 import AdminCabinet from '../pages/admin/AdminCabinet'
 import EditProfile from '../pages/admin/EditProfile'
 import { useAuthStore } from '@/store/authStore'
@@ -52,7 +51,7 @@ const routes = [
     {
         path: '/admin',
         name: 'adminLayout',
-        component: AdminLayout,
+        component: MyLayout,
         beforeEnter: (to, from, next) => {
             const authStore = useAuthStore()
             if (!authStore.getLogged) next('/login')
@@ -60,13 +59,13 @@ const routes = [
         },
         children: [
             {
-                path: '/',
+                path: '',
                 name: 'cabinet',
                 component: AdminCabinet
             },
             {
-                path: '/editProfile',
-                name: 'editProfile',
+                path: 'editProfile',
+                name: 'edit',
                 component: EditProfile
             },
         ]
@@ -74,6 +73,6 @@ const routes = [
 ]
 
 export default VueRouter.createRouter({
-    history:VueRouter.createWebHistory(),
+    history: VueRouter.createWebHistory(),
     routes
 })

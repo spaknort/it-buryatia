@@ -1,5 +1,5 @@
 <template>
-    <div v-if="uploaded && errors==''" class="alert alert-success" role="alert">
+    <div v-if=" uploaded && errors === '' " class="alert alert-success" role="alert">
         Данные успешно загружены
     </div>
     <div v-else-if="uploaded" class="alert alert-danger" role="alert">
@@ -7,73 +7,65 @@
     </div>
     <form>
         <label for="user_name">Ваше имя</label>
-        <input id="user_name" class="form-control mt-1" placeholder="Ваше имя" required :value="userInfo.user_name" />
+        <input :value="props.userInfo.user_name" id="user_name" class="form-control mt-1" placeholder="Ваше имя" required />
+
         <label for="description">О вас</label>
-        <textarea id="description" class="form-control mt-1" placeholder="О вас" :value="userInfo.description">
-        </textarea>
+        <textarea v-model="props.userInfo.description" id="description" class="form-control mt-1" placeholder="О вас"></textarea>
+
         <label for="team_name">Название команды</label>
-        <input id="team_name" class="form-control mt-1" placeholder="Название команды" required
-            :value="userInfo.team_name" />
+        <input v-model="props.userInfo.team_name" id="team_name" class="form-control mt-1" placeholder="Название команды" required />
+
         <label for="track">Трек</label>
-        <select id="track" class="form-control mt-1">
-            <option value="1">HTML - вёрстка</option>
-            <option value="2">Фронтенд разработка на Vue.js</option>
+        <select @change="userSelectedTrack = $event.target.value" id="track" class="form-control mt-1">
+            <option :selected="(track.id === props.userInfo.track_id)" v-for="track in tracks" :value="track.id">{{ track.title }}</option>
         </select><br>
+
         <button class="btn btn-success" @click="editProfile()">Изменить</button>
     </form>
 </template>
-<script>
-import axios from 'axios'
-export default {
-    name: 'UserDataForm',
-    props: ['userInfo'],
-    methods: {
-        editProfile() {
-            let user_name = document.getElementById("user_name").value
-            let team_name = document.getElementById("team_name").value
-            let description = document.getElementById("description").value
-            let track_id = document.getElementById("track").value
-            let env=this
-            axios.put(
-                'https://webcomp.bsu.ru/api/userData/update',
-                {
-                    "user_name": user_name, "team_name": team_name, "description": description, "track_id": track_id
-                },
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'content-type': 'application/json',
-                        'Authorization': 'Bearer ' + this.my_token
-                    }
-                }
-            )
-                .then(function (response) {
-                    // обработка успешного запроса
-                    let data = response["data"]
-                    env.uploaded=true
-                    if(data["STATUS"]!="SUCCESS"){
-                        env.errors=data["errors"]
-                    }
-                })
-                .catch(function (error) {
-                    // обработка ошибки
-                    console.log(error);
-                })
-                .finally(function () {
-                    // выполняется всегда
-                });
+
+<script setup>
+    import axios from 'axios'
+    import {useAuthStore} from "@/store/authStore";
+    import {ref} from "vue";
+
+    const authStore = useAuthStore()
+    const props = defineProps({
+        userInfo: Object
+    })
+
+    const uploaded = ref(false)
+    const errors = ref('')
+    const tracks = ref([
+        { id: 1, title: 'HTML - вёрстка' },
+        { id: 2, title: 'Фронтенд разработка на Vue.js' },
+    ])
+    const userSelectedTrack = ref(0)
+
+    async function editProfile() {
+        let user_name = document.getElementById("user_name").value
+        let team_name = document.getElementById("team_name").value
+        let description = document.getElementById("description").value
+        let track_id = document.getElementById("track").value
+
+        const requestData = {
+            "user_name": user_name,
+            "team_name": team_name,
+            "description": description,
+            "track_id": track_id
         }
-    },
-    computed: {
-        my_token() {
-            return this.$store.getters.getToken
+
+        const headers = {
+            'Accept': 'application/json',
+            'content-type': 'application/json',
+            'Authorization': 'Bearer ' + authStore.token
         }
-    },
-    data(){
-        return{
-            uploaded:false,
-            errors:""
+
+        const response = await axios.put('https://webcomp.bsu.ru/api/userData/update', requestData, { headers })
+        uploaded.value = true
+
+        if (response.data.status !== 200) {
+            errors.value = response.data.errors
         }
     }
-}
 </script>
