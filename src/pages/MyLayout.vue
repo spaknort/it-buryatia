@@ -1,11 +1,9 @@
 <template>
-    <div class="overflow-hidden">
-        <MyHeader/>
-        <main>
-            <router-view></router-view>
-        </main>
-        <MyFooter>{{ currentYear }} Мы будущее ИТ Бурятии</MyFooter>
-    </div>
+    <MyHeader/>
+    <main>
+        <router-view></router-view>
+    </main>
+    <MyFooter>{{ currentYear }} Мы будущее ИТ Бурятии</MyFooter>
 </template>
 
 <script setup>

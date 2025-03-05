@@ -1,5 +1,5 @@
 import {defineStore} from "pinia"
-import axios from "axios"
+import $api from "@/helpers/http";
 
 export const useAuthStore = defineStore('auth-store', {
     state: () => ({
@@ -28,13 +28,9 @@ export const useAuthStore = defineStore('auth-store', {
             return result
         },
         async getUserData() {
-            const headers = {
-                'Accept':' application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ this.token
-            }
+
             try {
-                const response = await axios.get('https://webcomp.bsu.ru/api/userData', { headers })
+                const response = await $api.get('https://webcomp.bsu.ru/api/userData')
                 return response.data['data']
             }
             catch (e) {

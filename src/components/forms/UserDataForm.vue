@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-    import axios from 'axios'
     import {useAuthStore} from "@/store/authStore";
     import {ref} from "vue";
+    import $api from "@/helpers/http";
 
     const authStore = useAuthStore()
     const props = defineProps({
@@ -55,13 +55,7 @@
             "track_id": track_id
         }
 
-        const headers = {
-            'Accept': 'application/json',
-            'content-type': 'application/json',
-            'Authorization': 'Bearer ' + authStore.token
-        }
-
-        const response = await axios.put('https://webcomp.bsu.ru/api/userData/update', requestData, { headers })
+        const response = await $api.put('https://webcomp.bsu.ru/api/userData/update', requestData)
         uploaded.value = true
 
         if (response.data.status !== 200) {

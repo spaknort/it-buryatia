@@ -21,8 +21,8 @@
 
 <script setup>
     import ProjectItem from './ProjectItem.vue';
-    import axios from 'axios';
     import {onMounted, ref} from "vue";
+    import $api from "@/helpers/http";
 
     const props = defineProps({
         isAll: Boolean
@@ -41,7 +41,7 @@
         projectItems.value = []
 
         try {
-            const response = await axios.get('https://webcomp.bsu.ru/api/allProjects')
+            const response = await $api.get('https://webcomp.bsu.ru/api/allProjects')
             const data = response.data['data']
 
             if (!props.isAll) {

@@ -26,7 +26,7 @@
                 password: password.value
             })
 
-            if (response.status === 200) await router.push({ path: '/admin' })
+            if (response.status === 200) window.location.href = '/admin'
         }
         catch (e) {
             alert("Неправильный логин или пароль")
