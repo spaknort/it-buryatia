@@ -19,6 +19,7 @@
         {'link': '/about', 'title': 'О нас'},
         {'link': '/projects', 'title': 'Список проектов'},
         {'link': '/contacts', 'title': 'Контакты'},
+        {'link': '/advertising', 'title': 'Рекламная аукциона'},
     ])
 </script>
 

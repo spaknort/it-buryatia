@@ -9,6 +9,10 @@ import EditProfile from '../pages/admin/EditProfile'
 import { useAuthStore } from '@/store/authStore'
 import ProjectsPage from "@/pages/ProjectsPage.vue";
 import ContactsPage from "@/pages/ContactsPage.vue";
+import AdvertisingPage from "@/pages/AdvertisingPage.vue";
+import AuctionPage from "@/pages/AuctionPage.vue";
+import BettingHistoryPageByProject from "@/pages/BettingHistoryPageByProject.vue";
+import MyBetting from "@/pages/MyBetting.vue";
 
 const routes = [
     {
@@ -40,6 +44,24 @@ const routes = [
                 path: '/contacts',
                 name: 'contactsPage',
                 component: ContactsPage
+            },
+            {
+                path: '/advertising',
+                name: 'advertisingPage',
+                component: AdvertisingPage
+            },
+            {
+                path: '/auction',
+                name: 'auctionPage',
+                component: AuctionPage,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: '/betting-history/:id',
+                name: 'bettingHistoryPageByProject',
+                component: BettingHistoryPageByProject,
             }
         ]
     },
@@ -52,10 +74,8 @@ const routes = [
         path: '/admin',
         name: 'adminLayout',
         component: MyLayout,
-        beforeEnter: (to, from, next) => {
-            const authStore = useAuthStore()
-            if (!authStore.getLogged) next('/login')
-            else next()
+        meta: {
+            requiresAuth: true
         },
         children: [
             {
@@ -68,11 +88,25 @@ const routes = [
                 name: 'edit',
                 component: EditProfile
             },
+            {
+                path: 'betting',
+                name: 'myBetting',
+                component: MyBetting
+            }
         ]
     }
 ]
 
-export default VueRouter.createRouter({
+const router = VueRouter.createRouter({
     history: VueRouter.createWebHistory(),
     routes
 })
+
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore()
+
+    if (to.meta.requiresAuth && !authStore.isLogged) next('/login')
+    else next()
+})
+
+export default router

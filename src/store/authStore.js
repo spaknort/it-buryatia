@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const useAuthStore = defineStore('auth-store', {
     state: () => ({
-        isLogged: localStorage.getItem('is-logged'),
+        isLogged: Boolean(localStorage.getItem('is-logged')),
         token: localStorage.getItem('my-token'),
     }),
     actions: {

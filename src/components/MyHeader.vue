@@ -36,9 +36,16 @@
         {'link': '/about', 'title': 'О нас'},
         {'link': '/projects', 'title': 'Список проектов'},
         {'link': '/contacts', 'title': 'Контакты'},
+        {'link': '/advertising', 'title': 'Рекламная аукциона'},
     ])
 
-    if (authStore.isLogged) menuItems.value.push({ link: '/admin', title: 'Личный кабинет' })
+    if (authStore.isLogged) menuItems.value = [
+        ...menuItems.value,
+        ...[
+            { link: '/admin', title: 'Личный кабинет' },
+            { link: '/admin/betting', title: 'Мои ставки'},
+        ]
+    ]
 
     function loginButtonHandler () {
         if (authStore.isLogged) {
