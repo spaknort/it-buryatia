@@ -15,8 +15,7 @@
         </div>
     </section>
 </template>
-<script>
-export default{
-    name:'MyPromo'
-}
+
+<script setup>
+
 </script>

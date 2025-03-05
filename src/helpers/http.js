@@ -4,8 +4,6 @@ import {useRouter} from "vue-router";
 
 const token = localStorage.getItem('my-token') || '';
 
-console.log(localStorage, ' - re')
-
 const $api = axios.create({
     baseURL: '',
     headers: {
@@ -15,7 +13,16 @@ const $api = axios.create({
     }
 })
 
-$api.interceptors.response.use((response) => response, async (error) => {
+const $api2 = axios.create({
+    baseURL: 'https://webcomp.bsu.ru/api/2025',
+    headers: {
+        "Content-Type": 'application/json',
+        'Accept':' application/json',
+        "Authorization": `Bearer ${token}`
+    }
+})
+
+const errorFunction = async (error) => {
     const authStore = useAuthStore()
     const router = useRouter()
 
@@ -25,6 +32,9 @@ $api.interceptors.response.use((response) => response, async (error) => {
     }
 
     console.log(error, ' interceptors error');
-})
+}
 
-export default $api
+$api.interceptors.response.use((response) => response, errorFunction)
+$api2.interceptors.response.use((response) => response, errorFunction)
+
+export {$api, $api2}

@@ -27,7 +27,7 @@
 <script setup>
     import {useAuthStore} from "@/store/authStore";
     import {ref} from "vue";
-    import $api from "@/helpers/http";
+    import { $api } from "@/helpers/http";
 
     const authStore = useAuthStore()
     const props = defineProps({

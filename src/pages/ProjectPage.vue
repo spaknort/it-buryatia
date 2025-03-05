@@ -19,7 +19,7 @@
 <script setup>
     import {onMounted, ref} from "vue";
     import {useRoute} from "vue-router";
-    import $api from "@/helpers/http";
+    import { $api } from "@/helpers/http";
 
     const id = ref(0)
     const projectItem = ref({

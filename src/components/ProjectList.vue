@@ -22,7 +22,7 @@
 <script setup>
     import ProjectItem from './ProjectItem.vue';
     import {onMounted, ref} from "vue";
-    import $api from "@/helpers/http";
+    import { $api } from "@/helpers/http";
 
     const props = defineProps({
         isAll: Boolean

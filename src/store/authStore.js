@@ -1,5 +1,5 @@
 import {defineStore} from "pinia"
-import $api from "@/helpers/http";
+import {$api} from "@/helpers/http";
 import axios from "axios";
 
 export const useAuthStore = defineStore('auth-store', {
