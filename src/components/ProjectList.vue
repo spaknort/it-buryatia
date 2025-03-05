@@ -4,7 +4,7 @@
             <div class="py-5">
                 <h2 class="text-center mx-auto">Список проектов</h2>
                 <div v-if="!errorFlag" class="row row-cols-1 row-cols-md-3 g-4">
-                    <ProjectItem  v-for="(item, index) in projectItems" :key="index" :projectData="item"/>
+                    <ProjectItem v-for="(item, index) in projectItems" :key="index" :betting="props.betting" :projectData="item"/>
                 </div>
                 <div v-else>
                     <h2>Ошибка сервера</h2>
@@ -25,7 +25,8 @@
     import { $api } from "@/helpers/http";
 
     const props = defineProps({
-        isAll: Boolean
+        isAll: Boolean,
+        betting: Boolean
     })
     const projectItems = ref([])
     const showButton = ref(true)

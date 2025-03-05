@@ -10,23 +10,54 @@
             <div class="card-body">
                 <h5 class="card-title">{{ title }}</h5>
                 <p class="card-text">{{ content }}</p>
+
+                <table v-if="betting" class="table card__betting-table">
+                    <thead class="thead-active">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Размер ставки</th>
+                        <th scope="col">Кто сделал ставку</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="bet in betting" :key="bet.id" :class="(bet.userId === authStore.userData.user_id) ? 'active_tr': ''">
+                        <th>{{ bet.id }}</th>
+                        <td>{{ bet.amount }}</td>
+                        <td>{{ bet.userName }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="my-3 px-3">
+
+            <div class="my-3 px-3 d-flex gap-2">
                 <span class="badge bg-info" v-for="(item,index) in getTags(tags)" :key="index">{{ item }}</span>&nbsp;&nbsp;                
             </div>
-            <div class="my-3 px-3">
+            <div class="my-3 px-3 d-flex gap-4">
                 <router-link :to="{name: 'projectPage', params: {id: projectId}}" class="text-decoration-none text-success">Подробнее</router-link>
+                <router-link :to="{name: 'bettingHistoryPageByProject', params: {id: projectId}}" class="text-decoration-none text-success">История ставок</router-link>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-    import {ref} from "vue";
+    import {onMounted, ref} from "vue";
+    import axios from "axios";
+    import {useAuthStore} from "@/store/authStore";
 
+    const authStore = useAuthStore()
     const props = defineProps({
-        projectData: Object
+        projectData: Object,
+        betting: Boolean
     })
+    const betting = ref([
+        {
+            id: 6,
+            userId: 233,
+            userName: 'Pavel',
+            amount: 0,
+        }
+    ])
 
     const
         projectId = ref(props.projectData.id),
@@ -43,6 +74,45 @@
         else return 'rating-bg-perfect'
     }
 
+    async function getBettingForProject(projectId, bettingCount) {
+        const response = await axios.get(`https://webcomp.bsu.ru/api/2025/project_bids/${projectId}`)
+        const result = []
+
+        for (let i = 0; i <= response.data['data'].length - 1; i++) {
+            if (i === bettingCount) break
+            const item = response.data['data'][i]
+
+            result.push({
+                id: item.id,
+                amount: item.amount,
+                userName: item.author.user_name,
+                userId: item.author.id
+            })
+        }
+
+        return result
+    }
+
     const getImgPath = img => "/img/" + img
     const getTags = tags => tags.split(',')
+
+    onMounted(async () => {
+        if (props.betting) {
+            const result = await getBettingForProject(props.projectData.id, 2)
+            betting.value = [...betting.value, ...result]
+        }
+    })
 </script>
+
+<style lang="css" scoped>
+    .card__betting-table {
+        width: 100%;
+        margin: 16px auto;
+        text-align: center;
+    }
+
+    .active_tr > td,
+    .active_tr > th {
+        background-color: #dfdfdf !important;
+    }
+</style>
