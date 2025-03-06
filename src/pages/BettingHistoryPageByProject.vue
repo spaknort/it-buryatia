@@ -7,7 +7,7 @@
                 <img :src="projectItem.image" :alt="projectItem.title"  class="betting-history__image">
 
                 <AddBetting :project="projectItem" />
-                <BettingForProject title="Все ставки по проекту" :project-id="projectId" :is-max="false" />
+                <BettingForProject title="Ставки по проекту" :project-id="projectId" :is-max="false" />
                 <BettingForProject title="Максимальная ставка по проекту" :project-id="projectId" :is-max="true" />
             </div>
         </div>

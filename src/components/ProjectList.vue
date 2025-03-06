@@ -18,7 +18,6 @@
 <script setup>
     import ProjectItem from './ProjectItem.vue';
     import {onMounted, ref} from "vue";
-    import {getProject} from "@/helpers/getProject";
     import {getProjects} from "@/helpers/getProjects";
 
     const props = defineProps({

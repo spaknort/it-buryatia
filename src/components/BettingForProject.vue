@@ -1,5 +1,5 @@
 <script setup>
-    import {onBeforeMount, ref} from "vue";
+import {onBeforeMount, ref, watch} from "vue";
     import {getBetting} from "@/helpers/getBetting";
     import {useAuthStore} from "@/store/authStore";
 
@@ -10,6 +10,25 @@
         isMax: Boolean,
     })
     const betting = ref([])
+    const selectedField = ref("1")
+
+    watch(selectedField, async (newValue, oldValue) => {
+        if (Number(newValue) === 1) {
+            betting.value = await getBetting(props.projectId)
+        }
+        if (Number(newValue) === 2) {
+           const usersId = []
+           const maxBettings = []
+
+           betting.value.forEach(item => { if (!usersId.includes(item.userId)) usersId.push(item.userId) })
+           usersId.forEach(userId => {
+               let maxBetting = { amount: 0 }
+               betting.value.forEach(item => { if (item.userId === userId && item.amount > maxBetting.amount) maxBetting = item })
+               maxBettings.push(maxBetting)
+           })
+           betting.value = maxBettings
+        }
+    })
 
     function getAmountMaxBetting(betting) {
         let maxBetting = { amount: 0 }
@@ -29,6 +48,12 @@
 <template>
     <div class="betting-for-project">
         <h3>{{ props.title }}</h3>
+
+        <select v-model="selectedField" v-if="!isMax" class="form-select" aria-label="Default select example">
+            <option value="1">Все ставки</option>
+            <option value="2">Лучшие ставки</option>
+        </select>
+
         <div class="betting-for-project__scroll-area">
             <table class="table">
                 <thead class="thead-dark">
@@ -58,6 +83,11 @@
     .betting-for-project {
         width: 100%;
         margin-top: 50px;
+    }
+
+    .active_tr > td,
+    .active_tr > th {
+        background-color: #dfdfdf !important;
     }
 
     .betting-for-project__scroll-area {

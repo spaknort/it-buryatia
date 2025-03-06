@@ -16,15 +16,12 @@
 </template>
 
 <script setup>
-    import { ref } from "vue";
     import { useAuthStore } from "@/store/authStore";
     import { useRouter } from "vue-router";
-    import {getRoutes} from "@/helpers/getRoutes";
     import Menu from "@/components/Menu.vue";
 
     const authStore = useAuthStore()
     const router = useRouter()
-
 
     function loginButtonHandler () {
         if (authStore.isLogged) {

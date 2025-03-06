@@ -9,6 +9,7 @@
     onBeforeMount(async () => {
         bettingRef.value = await getBetting(-1, 5)
     })
+
 </script>
 
 <template>
@@ -30,7 +31,7 @@
                    </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="bet in bettingRef">
+                    <tr v-for="bet in bettingRef" :class="((bet.userId === authStore.userData.user_id) ? 'active_tr': '')">
                         <td scope="row">{{ bet.id }}</td>
                         <td>{{ bet.projectName }}</td>
                         <td>{{ bet.amount }}</td>
@@ -51,6 +52,11 @@
 <style scoped>
     .advertising {
         margin-top: 118px;
+    }
+
+    .active_tr > td,
+    .active_tr > th {
+        background-color: #dfdfdf !important;
     }
 
     .advertising__image,
