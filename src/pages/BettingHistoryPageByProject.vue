@@ -6,7 +6,9 @@
                 <p>{{ projectItem.content }}</p>
                 <img :src="projectItem.image" :alt="projectItem.title"  class="betting-history__image">
 
-                <AddBetting :project="projectItem" />
+<!--                <AddBetting :project="projectItem" />-->
+                <BettingChart :projectId="projectId" />
+
                 <BettingForProject title="Ставки по проекту" :project-id="projectId" :is-max="false" />
                 <BettingForProject title="Максимальная ставка по проекту" :project-id="projectId" :is-max="true" />
             </div>
@@ -20,6 +22,7 @@
     import {getProject} from "@/helpers/getProject";
     import BettingForProject from "@/components/BettingForProject.vue";
     import AddBetting from "@/components/AddBetting.vue";
+    import BettingChart from "@/components/BettingChart.vue";
 
     const projectId = ref(Number(useRoute().params['id']))
     const projectItem = ref({

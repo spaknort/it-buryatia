@@ -3,11 +3,13 @@
     import {$api2} from "@/helpers/http";
 
     const props = defineProps({
-        project: Object
+        projectId: Number
     })
     const amount = ref(0)
     const maxAmount = 4294967295
     const minAmount = 1
+
+    console.log(props.projectId, ' - add bett')
 
     async function addBetting() {
         try {
