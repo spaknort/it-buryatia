@@ -6,7 +6,7 @@ export const useAuthStore = defineStore('auth-store', {
     state: () => ({
         isLogged: Boolean(localStorage.getItem('is-logged')),
         token: localStorage.getItem('my-token'),
-        userData: JSON.parse(localStorage.getItem('user-data')),
+        userData: JSON.parse(localStorage.getItem('user-data') || JSON.stringify({ user_id: -1 })),
     }),
     actions: {
         async login(payload) {
@@ -38,8 +38,7 @@ export const useAuthStore = defineStore('auth-store', {
                 return response.data['data']
             }
             catch (e) {
-                alert(e.message)
-                console.log(e)
+                console.log(e, ' - user data error in auth store')
             }
         },
         logout() {

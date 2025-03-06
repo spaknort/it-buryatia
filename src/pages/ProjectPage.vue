@@ -1,16 +1,18 @@
 <template>
-    <div :data-id="projectItem.id" class="container d-flex flex-column gap-5">
-        <h1>{{ projectItem.title }}</h1>
-        <div class="row">
-            <div class="col-3">
-                <img :src="projectItem.image" alt="ss"  class="card-img-top">
-            </div>
-            <div class="col-8">
-                <p>{{ projectItem.content }}</p>
-                <p><strong>Цена:</strong> {{ projectItem.price }}р</p>
-                <p><strong>Рейтинг/Оценка:</strong> {{ (projectItem.mark === -100) ? 'Б/O': projectItem.mark.toFixed(2) }}</p>
-                <a class="btn-info" :href="projectItem.link">Ссылка на оффициальный источник</a><br>
-                <span class="badge bg-info" v-for="item in projectItem.tags" :key="projectItem.id">{{ item }}</span>
+    <div class="project">
+        <div class="container">
+            <div class="project__inner">
+                <h1 class="title">{{ projectItem.title }}</h1>
+                <p class="project__description">{{ projectItem.content }}</p>
+                <img :src="projectItem.image" :alt="projectItem.title"  class="project__image">
+
+               <div class="project__params">
+                   <span><strong>Цена:</strong> {{ projectItem.price }}р</span>
+                   <span><strong>Рейтинг/Оценка:</strong> {{ (projectItem.mark === -100) ? 'Б/O': projectItem.mark.toFixed(2) }}</span>
+               </div>
+                <a :href="projectItem.link">Ссылка на оффициальный источник</a><br>
+
+                <Tags :tags="projectItem.tags" />
             </div>
         </div>
     </div>
@@ -19,7 +21,7 @@
 <script setup>
     import {onMounted, ref} from "vue";
     import {useRoute} from "vue-router";
-    import { $api } from "@/helpers/http";
+    import {getProject} from "@/helpers/getProject";
 
     const id = ref(0)
     const projectItem = ref({
@@ -30,21 +32,8 @@
         title: '',
         image: '',
         content: '',
-        tags: ['aa', 'ss']
+        tags: []
     })
-
-    async function getProject(projectId) {
-        const response = await $api.get(`https://webcomp.bsu.ru/api/project/${projectId}`)
-        const result = response.data['data']
-        console.log(result)
-        return {
-            ...result,
-            content: result.description,
-            link: result.project_link,
-            image: '/img/' + result.image,
-            tags: result.tags.split(', ')
-        }
-    }
 
     onMounted(async () => {
         const record_id = Number(useRoute().params['id'])
@@ -55,3 +44,34 @@
         }
     })
 </script>
+
+<style lang="css" scoped>
+    .project {
+        margin-top: 118px;
+    }
+
+    .project__inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .project__description {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .project__image {
+        width: 80%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .project__params {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        margin: 12px 0;
+    }
+</style>

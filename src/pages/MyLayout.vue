@@ -1,14 +1,12 @@
 <template>
-    <MyHeader/>
+    <Header/>
     <main>
         <router-view></router-view>
     </main>
-    <MyFooter>{{ currentYear }} Мы будущее ИТ Бурятии</MyFooter>
+    <Footer />
 </template>
 
 <script setup>
-    import MyFooter from '@/components/MyFooter.vue'
-    import MyHeader from '@/components/MyHeader.vue'
-
-    const currentYear = new Date().getFullYear()
+    import Header from "@/components/Header.vue";
+    import Footer from "@/components/Footer.vue";
 </script>

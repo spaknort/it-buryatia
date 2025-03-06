@@ -62,6 +62,9 @@ const routes = [
                 path: '/betting-history/:id',
                 name: 'bettingHistoryPageByProject',
                 component: BettingHistoryPageByProject,
+                meta: {
+                    requiresAuth: true
+                },
             }
         ]
     },

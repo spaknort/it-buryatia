@@ -1,59 +1,24 @@
 <script setup>
     import {useAuthStore} from "@/store/authStore";
-    import {$api2} from "@/helpers/http";
-    import {onMounted, ref} from "vue";
+    import {onBeforeMount, ref} from "vue";
+    import {getBetting} from "@/helpers/getBetting";
 
     const authStore = useAuthStore()
     const bettingRef = ref([])
 
-    async function getAllBids(count = 2) {
-        const response = await $api2.get('/allBids')
-        const result = []
-
-        for (let i = 0; i <= response.data['data'].length - 1; i++) {
-            if (i === count) break
-            result.push(response.data['data'][i])
-        }
-
-        return result
-    }
-
-    function parseDate(data) {
-        const newDate = new Date(data)
-        const date = `${ (newDate.getDate() >= 10) ? newDate.getDate(): '0' + newDate.getDate() }-${ (newDate.getMonth() >= 10) ? newDate.getMonth(): '0' + newDate.getMonth() }-${newDate.getFullYear()}`
-        const time = `${newDate.getHours()}:${newDate.getMinutes()}`
-
-        return { date, time }
-    }
-
-    onMounted(async () => {
-        const betting = await getAllBids(5)
-
-        console.log(betting)
-
-        betting.forEach(bet => {
-            const dateTime = parseDate(bet.created_at)
-
-            bettingRef.value.push({
-                id: bet.id,
-                projectName: bet.project.title,
-                amount: bet.amount,
-                date: dateTime.date,
-                time: dateTime.time,
-                userName: bet.author.user_name
-            })
-        })
+    onBeforeMount(async () => {
+        bettingRef.value = await getBetting(-1, 5)
     })
 </script>
 
 <template>
-    <div class="jumbotron my-5">
-        <div class="container d-flex flex-column gap-2">
-            <h3>
+    <div class="advertising">
+        <div class="container">
+            <h3 class="title">
                 Уважаемый посетители вы можете поучаствовать в аукционе проектов. Для этого пройдите по ссылке ниже. Внимание: участие только для авторизованных пользователей.
             </h3>
-            <img v-if="!authStore.isLogged" src="/img/banner.avif" alt="Banner">
-            <table v-else class="table">
+            <img class="advertising__image" v-if="!authStore.isLogged" src="/img/banner.avif" alt="Banner">
+            <table v-else class="advertising__table table">
                 <thead>
                    <tr>
                        <th scope="col">#</th>
@@ -75,12 +40,30 @@
                     </tr>
                 </tbody>
             </table>
-            <router-link to="/auction" v-show="authStore.isLogged" class="btn btn-info">Посмотреть аукцион</router-link>
-            <router-link to="/login" v-show="!authStore.isLogged" class="btn btn-info">Войти</router-link>
+            <div class="advertising__buttons">
+                <router-link to="/auction" v-show="authStore.isLogged" class="btn btn-info">Посмотреть аукцион</router-link>
+                <router-link to="/login" v-show="!authStore.isLogged" class="btn btn-info">Войти</router-link>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .advertising {
+        margin-top: 118px;
+    }
 
+    .advertising__image,
+    .advertising__table {
+        margin-top: 32px;
+    }
+
+    .advertising__buttons {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin: 0 auto;
+    }
 </style>

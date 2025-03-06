@@ -1,40 +1,37 @@
 <template>
-    <div class="col">
-        <div class="card h-100">
-            <div class="project-img">
-                <img :src=getImgPath(imgSrc) class="card-img-top" alt="Project">
-                <div :class="['card-rating', getRating(rating)]">
-                    <span class="fs-2 text-white">{{ (rating === -100) ? 'Б/O': rating.toFixed(2) }}</span>
-                </div>
+    <div class="project-list-item">
+        <div class="project-list-item__header">
+            <img :src="imgSrc" :alt="title">
+            <div :class="['card-rating', getRating(rating)]">
+                <span class="text-white">{{ (rating === -100) ? 'Б/O': rating.toFixed(2) }}</span>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ title }}</h5>
-                <p class="card-text">{{ content }}</p>
+        </div>
+        <div class="project-list-item__content">
+            <h5>{{ title }}</h5>
+            <p>{{ content }}</p>
 
-                <table v-if="betting" class="table card__betting-table">
-                    <thead class="thead-active">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Размер ставки</th>
-                        <th scope="col">Кто сделал ставку</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="bet in betting" :key="bet.id" :class="(bet.userId === authStore.userData.user_id) ? 'active_tr': ''">
-                        <th>{{ bet.id }}</th>
-                        <td>{{ bet.amount }}</td>
-                        <td>{{ bet.userName }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="my-3 px-3 d-flex gap-2">
-                <span class="badge bg-info" v-for="(item,index) in getTags(tags)" :key="index">{{ item }}</span>&nbsp;&nbsp;                
-            </div>
-            <div class="my-3 px-3 d-flex gap-4">
+            <table v-if="props.betting" class="table project-list-item__betting-table">
+                <thead class="thead-active">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Размер ставки</th>
+                    <th scope="col">Кто сделал ставку</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="bet in betting" :key="bet.id" :class="(bet.userId === authStore.userData.user_id) ? 'active_tr': ''">
+                    <th>{{ bet.id }}</th>
+                    <td>{{ bet.amount }}</td>
+                    <td>{{ bet.userName }} {{ bet.userId }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="project-list-item__footer">
+            <Tags :tags="tags" />
+            <div class="project-list-item__buttons">
                 <router-link :to="{name: 'projectPage', params: {id: projectId}}" class="text-decoration-none text-success">Подробнее</router-link>
-                <router-link :to="{name: 'bettingHistoryPageByProject', params: {id: projectId}}" class="text-decoration-none text-success">История ставок</router-link>
+                <router-link v-if="props.betting" :to="{name: 'bettingHistoryPageByProject', params: {id: projectId}}" class="text-decoration-none text-success">История ставок</router-link>
             </div>
         </div>
     </div>
@@ -44,20 +41,14 @@
     import {onMounted, ref} from "vue";
     import axios from "axios";
     import {useAuthStore} from "@/store/authStore";
+    import {getBetting} from "@/helpers/getBetting";
 
     const authStore = useAuthStore()
     const props = defineProps({
         projectData: Object,
         betting: Boolean
     })
-    const betting = ref([
-        {
-            id: 6,
-            userId: 233,
-            userName: 'Pavel',
-            amount: 0,
-        }
-    ])
+    const betting = ref([])
 
     const
         projectId = ref(props.projectData.id),
@@ -74,45 +65,77 @@
         else return 'rating-bg-perfect'
     }
 
-    async function getBettingForProject(projectId, bettingCount) {
-        const response = await axios.get(`https://webcomp.bsu.ru/api/2025/project_bids/${projectId}`)
-        const result = []
-
-        for (let i = 0; i <= response.data['data'].length - 1; i++) {
-            if (i === bettingCount) break
-            const item = response.data['data'][i]
-
-            result.push({
-                id: item.id,
-                amount: item.amount,
-                userName: item.author.user_name,
-                userId: item.author.id
-            })
-        }
-
-        return result
-    }
-
-    const getImgPath = img => "/img/" + img
-    const getTags = tags => tags.split(',')
-
     onMounted(async () => {
         if (props.betting) {
-            const result = await getBettingForProject(props.projectData.id, 2)
-            betting.value = [...betting.value, ...result]
+            betting.value = await getBetting(props.projectData.id, 2)
         }
     })
 </script>
 
 <style lang="css" scoped>
-    .card__betting-table {
-        width: 100%;
-        margin: 16px auto;
+    .project-list-item__betting-table {
+        width: 65%;
+        margin: 16px 0;
         text-align: center;
     }
 
     .active_tr > td,
     .active_tr > th {
         background-color: #dfdfdf !important;
+    }
+
+    .project-list-item {
+        border: solid 1px gray;
+    }
+
+    .project-list-item__header {
+        position: relative;
+        height: 350px;
+    }
+
+    .project-list-item__content {
+        padding: 24px 32px;
+    }
+
+    .project-list-item__footer {
+        padding: 0 32px 24px 32px;
+    }
+
+    .project-list-item__header > img {
+        width: 100%;
+        height: 100%;
+        user-select: none;
+    }
+
+    .rating-bg-bad {
+        background-color: rgb(192, 9, 9);
+    }
+    .rating-bg-good {
+        background-color: rgb(255, 145, 0);
+    }
+    .rating-bg-perfect {
+        background-color:  rgb(40, 192, 9);
+    }
+    .rating-bg-info {
+        background-color: #214eaf
+    }
+
+    .card-rating {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        font-size: 1.2rem;
+        border-radius: 50%;
+    }
+
+    .project-list-item__buttons {
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        column-gap: 12px;
     }
 </style>

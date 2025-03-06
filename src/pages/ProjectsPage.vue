@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <ProjectList :is-all="true" />
+    <ProjectList :count="-1" :betting="false" />
 </template>
 
 <style scoped>
