@@ -64,7 +64,7 @@
 </script>
 
 <template>
-    <canvas width="700" height="300" id="myChart"></canvas>
+    <canvas width="700" height="400" id="myChart"></canvas>
 </template>
 
 <style scoped lang="css">

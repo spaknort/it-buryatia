@@ -1,28 +1,47 @@
 <script setup>
-    import {ref} from "vue";
-    import {$api2} from "@/helpers/http";
+import {onBeforeMount, ref} from "vue";
+    import {getAmountMaxBetting} from "@/helpers/getAmountMaxBetting";
+import {getBetting} from "@/helpers/getBetting";
 
     const props = defineProps({
-        projectId: Number
+        betting: Array,
+        projectId: Number,
     })
+    const betting = ref(props.betting)
+
     const amount = ref(0)
     const maxAmount = 4294967295
     const minAmount = 1
 
-    console.log(props.projectId, ' - add bett')
+    async function checkBetting(amount) {
+        if (amount > minAmount && amount < maxAmount && Number.isInteger(amount)) {
+            const maxBet = getAmountMaxBetting(betting.value)
+            if (maxBet.amount > amount) alert('Ваша ставка меньше максимальной ставки для проекта')
+
+            return amount
+        }
+        else {
+            throw new Error('Сумма ставки не валидна')
+        }
+    }
 
     async function addBetting() {
         try {
-            const response = await $api2.put('/bids/add', { amount: amount.value, project_id: props.project.id })
-            if (response.data.status === 201) alert(`Ставка на сумму ${amount} для проекта ${props.project.title}`)
-
-            console.log(response.data.status)
+            await checkBetting(amount.value)
+            // const response = await $api2.put('/bids/add', { amount: amount.value, project_id: props.projectId })
+            // if (response.data.status === 201) alert(`Ставка на сумму ${amount}`)
+            //
+            // console.log(response.data.status)
         }
         catch (e) {
             console.log(e)
             alert(e.message)
         }
     }
+
+    onBeforeMount(async () => {
+        betting.value = await getBetting(props.projectId)
+    })
 </script>
 
 <template>

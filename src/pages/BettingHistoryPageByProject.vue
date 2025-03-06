@@ -6,11 +6,10 @@
                 <p>{{ projectItem.content }}</p>
                 <img :src="projectItem.image" :alt="projectItem.title"  class="betting-history__image">
 
-<!--                <AddBetting :project="projectItem" />-->
+                <AddBetting :projectId="projectId" />
+                <BettingForProject :betting="betting" title="Ставки по проекту" :project-id="projectId" :is-max="false" />
+                <BettingForProject :betting="betting" title="Максимальная ставка по проекту" :project-id="projectId" :is-max="true" />
                 <BettingChart :projectId="projectId" />
-
-                <BettingForProject title="Ставки по проекту" :project-id="projectId" :is-max="false" />
-                <BettingForProject title="Максимальная ставка по проекту" :project-id="projectId" :is-max="true" />
             </div>
         </div>
     </div>
@@ -23,7 +22,9 @@
     import BettingForProject from "@/components/BettingForProject.vue";
     import AddBetting from "@/components/AddBetting.vue";
     import BettingChart from "@/components/BettingChart.vue";
+    import {getBetting} from "@/helpers/getBetting";
 
+    const betting = ref([])
     const projectId = ref(Number(useRoute().params['id']))
     const projectItem = ref({
         id: 0,
@@ -35,6 +36,7 @@
     onMounted(async () => {
         if (projectId.value) {
             projectItem.value = await getProject(projectId.value)
+            betting.value = await getBetting(projectId.value)
         }
     })
 </script>

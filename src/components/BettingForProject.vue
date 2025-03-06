@@ -1,20 +1,22 @@
 <script setup>
-import {onBeforeMount, ref, watch} from "vue";
+    import {onBeforeMount, ref, watch} from "vue";
     import {getBetting} from "@/helpers/getBetting";
     import {useAuthStore} from "@/store/authStore";
+    import {getAmountMaxBetting} from "@/helpers/getAmountMaxBetting";
 
     const authStore = useAuthStore()
     const props = defineProps({
+        betting: Array,
         projectId: Number,
         title: String,
         isMax: Boolean,
     })
-    const betting = ref([])
+    const betting = ref(props.betting)
     const selectedField = ref("1")
 
     watch(selectedField, async (newValue, oldValue) => {
         if (Number(newValue) === 1) {
-            betting.value = await getBetting(props.projectId)
+            betting.value = props.betting
         }
         if (Number(newValue) === 2) {
            const usersId = []
@@ -29,13 +31,6 @@ import {onBeforeMount, ref, watch} from "vue";
            betting.value = maxBettings
         }
     })
-
-    function getAmountMaxBetting(betting) {
-        let maxBetting = { amount: 0 }
-        betting.forEach(bet => { if (bet.amount > maxBetting.amount) maxBetting = bet })
-
-        return maxBetting
-    }
 
     onBeforeMount(async () => {
         const allBetting = await getBetting(props.projectId)
