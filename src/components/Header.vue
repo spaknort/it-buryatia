@@ -42,7 +42,7 @@
         top: 0;
         z-index: 1000;
         width: 100%;
-        background-color: #0b3f71;
+        background-color: #343a40;
     }
 
     .header__inner {

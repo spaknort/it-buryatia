@@ -76,7 +76,7 @@
         top: 20px;
         width: max-content;
         min-width: 200px;
-        background-color: #0B3F71;
+        background-color: #343a40;
         transform: translateX(-50%);
         display: none;
         flex-direction: column;

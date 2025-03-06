@@ -1,15 +1,28 @@
 <script setup>
-import {onBeforeMount, ref} from "vue";
-import {getBetting} from "@/helpers/getBetting";
+    import {onBeforeMount, ref} from "vue";
+    import {getBetting} from "@/helpers/getBetting";
+    import {useAuthStore} from "@/store/authStore";
 
+    const authStore = useAuthStore()
     const props = defineProps({
         projectId: Number,
-        title: String
+        title: String,
+        isMax: Boolean,
     })
     const betting = ref([])
 
+    function getAmountMaxBetting(betting) {
+        let maxBetting = { amount: 0 }
+        betting.forEach(bet => { if (bet.amount > maxBetting.amount) maxBetting = bet })
+
+        return maxBetting
+    }
+
     onBeforeMount(async () => {
-       betting.value = await getBetting(props.projectId)
+        const allBetting = await getBetting(props.projectId)
+
+        if (props.isMax) betting.value = [getAmountMaxBetting(allBetting)]
+        else betting.value = allBetting
     })
 </script>
 
@@ -28,7 +41,7 @@ import {getBetting} from "@/helpers/getBetting";
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="bet in betting">
+                <tr v-for="bet in betting" :class="(bet.userId === authStore.userData.user_id) ? 'active_tr': ''">
                     <td scope="row">{{ bet.id }}</td>
                     <td>{{ bet.amount }}</td>
                     <td>{{ bet.date }}</td>
