@@ -32,9 +32,12 @@
         }
     })
 
+    watch(() => props.betting, async () => {
+        if (!props.isMax) betting.value = props.betting
+    })
+
     onBeforeMount(async () => {
         const allBetting = await getBetting(props.projectId)
-
         if (props.isMax) betting.value = [getAmountMaxBetting(allBetting)]
         else betting.value = allBetting
     })

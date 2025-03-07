@@ -67,7 +67,7 @@
 
     onMounted(async () => {
         if (props.betting) {
-            betting.value = await getBetting(props.projectData.id, 2)
+            betting.value = await getBetting(props.projectData.id, 3)
         }
     })
 </script>

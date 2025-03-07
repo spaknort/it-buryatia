@@ -6,10 +6,10 @@
                 <p>{{ projectItem.content }}</p>
                 <img :src="projectItem.image" :alt="projectItem.title"  class="betting-history__image">
 
-                <AddBetting :projectId="projectId" />
+                <AddBetting @update-betting="() => getProjectAndBetting()" title="Сделать ставку" :betting="betting" :projectId="projectId" />
                 <BettingForProject :betting="betting" title="Ставки по проекту" :project-id="projectId" :is-max="false" />
                 <BettingForProject :betting="betting" title="Максимальная ставка по проекту" :project-id="projectId" :is-max="true" />
-                <BettingChart :projectId="projectId" />
+                <BettingChart title="График ставок по проекту" :projectId="projectId" />
             </div>
         </div>
     </div>
@@ -33,12 +33,14 @@
         content: '',
     })
 
-    onMounted(async () => {
+    async function getProjectAndBetting() {
         if (projectId.value) {
             projectItem.value = await getProject(projectId.value)
             betting.value = await getBetting(projectId.value)
         }
-    })
+    }
+
+    onMounted(async () => await getProjectAndBetting())
 </script>
 
 <style lang="css" scoped>
