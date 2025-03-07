@@ -41,5 +41,6 @@
 <style>
     .about-us {
         margin-top: 118px;
+        text-align: left;
     }
 </style>

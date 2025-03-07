@@ -20,8 +20,11 @@
 
     async function checkBetting(amount) {
         if (amount > minAmount && amount < maxAmount && Number.isInteger(amount)) {
-            const maxBet = getAmountMaxBetting(betting.value)
-            const maxBetForUser = getAmountMaxBettingForUser(betting.value, authStore.userData.user_id)
+            const bettings = await getBetting(props.projectId, -1)
+            const maxBet = getAmountMaxBetting(bettings)
+            const maxBetForUser = getAmountMaxBettingForUser(bettings, authStore.userData.user_id)
+
+            console.log(bettings, authStore.userData.user_id, maxBetForUser.amount, amount)
 
             if (maxBetForUser.amount > amount) throw new Error(`Ваша ставка меньше вашей максимальной ставки по проекту. Эта ставка не валидна, сделайте новую, которая будет больше чем ${maxBetForUser.amount}`)
             if (maxBet.amount > amount) alert(`Ваша ставка меньше максимальной ставки по проекту. Максимальная ставка по проекту = ${maxBet.amount}. Ставка валидна.`)

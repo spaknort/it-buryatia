@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="admin-cabinet">
         <div class="container d-flex flex-column gap-5">
             <div class="row">
                 <div class="col-12">
@@ -37,3 +37,9 @@
         userInfo.value = await authStore.getUserData()
     })
 </script>
+
+<style lang="css" scoped>
+    .admin-cabinet {
+        margin-top: 118px;
+    }
+</style>
