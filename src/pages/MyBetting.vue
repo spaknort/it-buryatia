@@ -4,6 +4,8 @@
 
 <template>
 fefwfwfwf
+
+  HUI
 </template>
 
 <style scoped>
