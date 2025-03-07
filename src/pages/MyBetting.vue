@@ -23,7 +23,9 @@
                     <p class="alert-info text-center" v-if="writingBetting.length === 0 && selectedField !== '0'">Таких ставок нет</p>
                     <tr v-for="bet in writingBetting">
                         <td scope="row">{{ bet.id }}</td>
-                        <td>{{ bet.projectName }}</td>
+                        <td>
+                            <router-link :to="'/betting-history/' + bet.projectId">{{ bet.projectName }}</router-link>
+                        </td>
                         <td>{{ bet.amount }}</td>
                         <td>{{ bet.date }}</td>
                         <td>{{ bet.time }}</td>
@@ -48,7 +50,9 @@
                 <tbody>
                 <tr v-for="bet in bettingRef" :class="(maxBets.includes(bet.id)) ? 'active_tr': ''" >
                     <td scope="row">{{ bet.id }}</td>
-                    <td>{{ bet.projectName }}</td>
+                    <td>
+                        <router-link :to="'/betting-history/' + bet.projectId">{{ bet.projectName }}</router-link>
+                    </td>
                     <td>{{ bet.amount }}</td>
                     <td>{{ bet.date }}</td>
                     <td>{{ bet.time }}</td>

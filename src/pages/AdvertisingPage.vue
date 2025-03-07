@@ -33,7 +33,9 @@
                 <tbody>
                     <tr v-for="bet in bettingRef" :class="((bet.userId === authStore.userData.user_id) ? 'active_tr': '')">
                         <td scope="row">{{ bet.id }}</td>
-                        <td>{{ bet.projectName }}</td>
+                        <td>
+                            <router-link :to="'/betting-history/' + bet.projectId">{{ bet.projectName }}</router-link>
+                        </td>
                         <td>{{ bet.amount }}</td>
                         <td>{{ bet.date }}</td>
                         <td>{{ bet.time }}</td>
