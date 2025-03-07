@@ -17,6 +17,7 @@ export async function getBetting(projectId, bettingCount) {
             amount: item.amount,
             userName: item.author.user_name,
             userId: item.author.user_id,
+            projectId: item.project.id,
             projectName: item.project.title,
             date: dateTime.date,
             time: dateTime.time,
