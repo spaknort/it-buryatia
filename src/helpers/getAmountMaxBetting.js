@@ -13,3 +13,12 @@ export function getAmountMaxBettingForUser(betting, userId) {
 
     return maxBetting
 }
+
+export function getAmountMaxBettingForProject(betting, projectId) {
+    let maxBetting = { amount: 0 }
+    betting.forEach(bet => {
+        if (bet.amount > maxBetting.amount && bet.projectId === projectId) maxBetting = bet
+    })
+
+    return maxBetting
+}

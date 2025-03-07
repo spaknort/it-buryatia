@@ -9,7 +9,9 @@ const $api = axios.create({
     headers: {
         "Content-Type": 'application/json',
         'Accept':' application/json',
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Access-Control-Allow-Origin": "*",
+        'Access-Control-Allow-Credentials': true
     }
 })
 
